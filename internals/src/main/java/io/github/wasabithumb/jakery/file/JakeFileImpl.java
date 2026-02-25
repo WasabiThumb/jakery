@@ -138,8 +138,8 @@ final class JakeFileImpl implements JakeFile {
             for (JakeFileGroupImpl<?> next : this.groups) {
                 String name = next.name();
                 JakeFileGroupImpl<?> existing = ret.put(name, next);
-                if (existing == null) continue;
-                throw new IllegalStateException("Multiple groups with name \"" + name + "\"");
+                if (existing == null || existing.equals(next)) continue;
+                throw new IllegalStateException("Multiple distinct groups with name \"" + name + "\"");
             }
             return Collections.unmodifiableMap(ret);
         }

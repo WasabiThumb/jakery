@@ -26,8 +26,6 @@ import org.jetbrains.annotations.NonNls;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.lang.classfile.ClassModel;
 import java.util.stream.Stream;
 
@@ -109,17 +107,10 @@ public abstract class JakeryAgent {
         return ret;
     }
 
-    /**
-     * Write the groups declared by this agent as a
-     * Jakery index file.
-     */
-    public final void write(OutputStream out) throws IOException {
-        JakeFile.Builder builder = JakeFile.builder();
+    final void apply(JakeFile.Builder builder) {
         for (ResolvedGroup group : JakeryAgentMagic.resolveGroups(this)) {
-            group.data().apply(group.name(), builder);
+            group.apply(builder);
         }
-        JakeFile file = builder.build();
-        file.write(out);
     }
 
     //

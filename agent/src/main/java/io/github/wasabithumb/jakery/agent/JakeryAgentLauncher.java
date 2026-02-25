@@ -15,6 +15,7 @@
  */
 package io.github.wasabithumb.jakery.agent;
 
+import io.github.wasabithumb.jakery.file.JakeFile;
 import io.github.wasabithumb.jakery.find.ClassFinder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
@@ -37,23 +38,35 @@ public final class JakeryAgentLauncher {
 
     static void main(String[] args) throws IOException {
         Path out = prepareOutputFile(args);
-        Class<? extends JakeryAgent> agentClass = findAgentClass();
-        JakeryAgent agent = initAgent(agentClass);
+        JakeFile.Builder builder = JakeFile.builder();
 
+        try (Stream<? extends Class<?>> stream = listAgentClasses()) {
+            Iterator<? extends Class<?>> iter = stream.iterator();
+            Class<?> next;
+
+            while (iter.hasNext()) {
+                next = iter.next();
+                JakeryAgent agent = initAgent(next.asSubclass(JakeryAgent.class));
+                agent.apply(builder);
+            }
+        }
+
+        JakeFile file = builder.build();
         try (OutputStream os = Files.newOutputStream(
                 out,
                 StandardOpenOption.WRITE,
                 StandardOpenOption.CREATE,
                 StandardOpenOption.TRUNCATE_EXISTING)
         ) {
-            agent.write(os);
+            file.write(os);
         }
     }
 
-    private static JakeryAgent initAgent(Class<? extends JakeryAgent> type) {
+    private static JakeryAgent initAgent(Class<?> type) {
+        Class<? extends JakeryAgent> qual = type.asSubclass(JakeryAgent.class);
         Constructor<? extends JakeryAgent> con;
         try {
-            con = type.getDeclaredConstructor();
+            con = qual.getDeclaredConstructor();
         } catch (NoSuchMethodException e) {
             throw new IllegalStateException("Agent class " + type.getName() + " has no primary constructor");
         }
@@ -95,24 +108,6 @@ public final class JakeryAgentLauncher {
         if (parent != null) Files.createDirectories(parent);
 
         return path;
-    }
-
-    private static Class<? extends JakeryAgent> findAgentClass() {
-        try (Stream<? extends Class<?>> stream = listAgentClasses()) {
-            Iterator<? extends Class<?>> iter = stream.iterator();
-            if (!iter.hasNext()) {
-                throw new IllegalStateException("No agent classes found");
-            }
-            Class<?> ret = iter.next();
-            if (iter.hasNext()) {
-                throw new IllegalStateException(
-                        "Multiple agent classes found (" +
-                                ret.getName() + " and " +
-                                iter.next().getName() + ")"
-                );
-            }
-            return ret.asSubclass(JakeryAgent.class);
-        }
     }
 
     private static Stream<? extends Class<?>> listAgentClasses() {

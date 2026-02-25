@@ -44,6 +44,10 @@ indraPluginPublishing {
     )
 }
 
+gradlePlugin {
+    vcsUrl = "https://github.com/WasabiThumb/jakery.git"
+}
+
 tasks.jar {
     manifest.attributes["Library-Version"] = "${rootProject.version}"
 }

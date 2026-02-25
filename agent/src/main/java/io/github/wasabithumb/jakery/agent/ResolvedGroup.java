@@ -15,6 +15,7 @@
  */
 package io.github.wasabithumb.jakery.agent;
 
+import io.github.wasabithumb.jakery.file.JakeFile;
 import io.github.wasabithumb.jakery.file.JakeFileApplicable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;
@@ -24,4 +25,10 @@ import org.jspecify.annotations.NullMarked;
 record ResolvedGroup(
         String name,
         JakeFileApplicable data
-) { }
+) {
+
+    void apply(JakeFile.Builder builder) {
+        this.data.apply(this.name, builder);
+    }
+
+}
