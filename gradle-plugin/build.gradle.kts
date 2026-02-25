@@ -19,8 +19,10 @@ repositories {
     gradlePluginPortal()
 }
 
+val internals: Project = project(":internals")
+
 dependencies {
-    implementation(project(":internals"))
+    compileOnly(internals)
 
     // Shadow integration
     compileOnly("com.gradleup.shadow:shadow-gradle-plugin:9.3.1")
@@ -53,6 +55,28 @@ indraPluginPublishing {
 
 gradlePlugin {
     vcsUrl = "https://github.com/WasabiThumb/jakery.git"
+}
+
+val generateLibraryVersionFile = tasks.register("generateLibraryVersionFile") {
+    val file = this.temporaryDir.resolve("libraryVersion.txt")
+    outputs.file(file)
+    doFirst {
+        file.writeText("${rootProject.version}\n")
+    }
+}
+
+tasks.processResources {
+    // Generate the META-INF/jakery/libraryVersion.txt file
+    val file = generateLibraryVersionFile.map { it.outputs.files.singleFile }
+    dependsOn(generateLibraryVersionFile)
+    into("META-INF/jakery") {
+        from(file)
+    }
+
+    // Shade internals
+    val internalsCompile = internals.tasks.compileJava
+    dependsOn(internalsCompile)
+    from(internalsCompile.map { it.outputs.files })
 }
 
 tasks.jar {

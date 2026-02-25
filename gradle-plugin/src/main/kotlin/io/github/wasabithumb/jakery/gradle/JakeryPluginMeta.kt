@@ -15,27 +15,13 @@
  */
 package io.github.wasabithumb.jakery.gradle
 
-import java.util.jar.Attributes
-import java.util.jar.Manifest
-
 internal object JakeryPluginMeta {
 
-    private val attributes: Attributes by lazy {
-        JakeryPlugin::class.java.getResourceAsStream("/META-INF/MANIFEST.MF").use { stream ->
-            val manifest = Manifest()
-            manifest.read(stream)
-            manifest.mainAttributes
-        }
+    val libraryVersion: String by lazy {
+        JakeryPlugin::class.java.getResourceAsStream("/META-INF/jakery/libraryVersion.txt")
+            ?.bufferedReader(Charsets.UTF_8)
+            ?.readLine()
+            ?: throw IllegalStateException("Missing library version file")
     }
-
-    //
-
-    operator fun get(key: String): String {
-        return this.attributes.getValue(key) ?:
-            throw IllegalStateException("No manifest attribute with name $key")
-    }
-
-    val libraryVersion: String
-        get() = this["Library-Version"]
 
 }
