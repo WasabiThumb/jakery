@@ -23,7 +23,7 @@ responsible for declaring the groups used at runtime.
 ```kotlin
 plugins {
     id("java")
-    id("io.github.wasabithumb.jakery-gradle") version "0.1.0"
+    id("io.github.wasabithumb.jakery-gradle") version "0.2.0"
 }
 
 repositories {
@@ -35,7 +35,7 @@ repositories {
 ```groovy
 plugins {
     id 'java'
-    id 'io.github.wasabithumb.jakery-gradle' version '0.1.0'
+    id 'io.github.wasabithumb.jakery-gradle' version '0.2.0'
 }
 
 repositories {
