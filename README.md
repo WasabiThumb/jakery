@@ -101,8 +101,8 @@ public final class Animals {
 > In the future, it may be possible to declare type groups containing primitive or array types.
 
 ## Roadmap
-- [ ] Support relocation via Shadow
-- [ ] Negotiate behavior when multiple agent classes are present
+- [x] Support relocation via Shadow
+- [x] Negotiate behavior when multiple agent classes are present
 - [ ] Improve documentation
 
 ## License

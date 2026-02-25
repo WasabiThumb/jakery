@@ -93,6 +93,23 @@ final class ArrayTypeDescriptor implements TypeDescriptor {
     }
 
     @Override
+    public TypeDescriptor arrayType() {
+        return new ArrayTypeDescriptor(this, this.depth + 1);
+    }
+
+    @Override
+    public boolean isArray() {
+        return true;
+    }
+
+    @Override
+    public TypeDescriptor componentType() {
+        int nd = this.depth - 1;
+        if (nd <= 0) return this.componentType;
+        return new ArrayTypeDescriptor(this.componentType, nd);
+    }
+
+    @Override
     public int hashCode() {
         return 31 * this.componentType.hashCode() + this.depth;
     }

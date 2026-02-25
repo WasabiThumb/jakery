@@ -56,11 +56,23 @@ public interface TypeDescriptor extends Descriptor {
 
     Class<?> resolve(ClassLoader classLoader) throws ClassNotFoundException;
 
+    default TypeDescriptor arrayType() {
+        return new ArrayTypeDescriptor(this, 1);
+    }
+
     default boolean isClassName() {
         return false;
     }
 
     default @Pattern(CLASS_NAME_PATTERN) String asClassName() throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
+    }
+
+    default boolean isArray() {
+        return false;
+    }
+
+    default TypeDescriptor componentType() throws UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
 

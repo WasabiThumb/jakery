@@ -19,6 +19,13 @@ repositories {
     gradlePluginPortal()
 }
 
+dependencies {
+    implementation(project(":internals"))
+
+    // Shadow integration
+    compileOnly("com.gradleup.shadow:shadow-gradle-plugin:9.3.1")
+}
+
 kotlin {
     compilerOptions {
         jvmTarget = JvmTarget.JVM_25
