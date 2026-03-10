@@ -100,6 +100,19 @@ public final class Animals {
 > These are accessed at runtime via ``typeGroup``, ``fieldGroup``, ``methodGroup`` and ``constructorGroup`` respectively.
 > In the future, it may be possible to declare type groups containing primitive or array types.
 
+## Shadow Integration
+To work properly with [Shadow](https://github.com/GradleUp/shadow), Jakery's
+metadata files must be transformed, much like service files. This allows relocation
+to work as intended.
+
+```kotlin
+import io.github.wasabithumb.jakery.gradle.shadow.mergeJakeryFiles
+
+tasks.shadowJar {
+    mergeJakeryFiles()
+}
+```
+
 ## Roadmap
 - [x] Support relocation via Shadow
 - [x] Negotiate behavior when multiple agent classes are present
